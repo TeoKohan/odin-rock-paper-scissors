@@ -3,8 +3,42 @@
     <head>
         <title>Rock Paper Scissors</title>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+        <script src="rock-paper-scissors.js"></script>
     </head>
     <body>
-        <script src="rock-paper-scissors.js"></script>
+        <header>
+                <div class="info" id="player">
+                    <div class="namecard">
+                        <img src="./images/player.png" class="profile">
+                        <div class="name">Player</div>
+                    </div>
+                    <div class="scoreboard"><div class="score">0</div></div>
+                </div>
+                <div class="info" id="computer">
+                    <div class="namecard">
+                        <div class="name">Computer</div>
+                        <img src="./images/robot.png" class="profile">
+                    </div>
+                    <div class="scoreboard"><div class="score">0</div></div>
+                </div>
+        </header>
+
+        <div class="content">
+            <div class="battleground">
+                <img class="combatant" id="player-choice">
+                <div class="prompt"></div>
+                <img class="combatant" id="cpu-choice">
+            </div>
+            <div class="buttons">
+                <button id="rock"><img src="./images/rock.png"></button>
+                <button id="paper"><img src="./images/paper.png"></button>
+                <button id="scissors"><img src="./images/scissors.png"></button>
+            </div>
+        </div>
+        
+        <footer>
+            <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        </footer>
     </body>
 </html>
