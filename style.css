@@ -62,7 +62,7 @@ header {
     background-color: cyan;
 }
 
-#computer {
+#cpu {
     flex-direction: row-reverse;
     background-color: salmon;
 }
@@ -95,19 +95,25 @@ header {
     height: 128px;
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 32px;
 }
 
 .prompt {
     width: 512px;
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bolder;
+    text-align: center;
     color: whitesmoke;
 }
 
 .combatant {
     height: 128px;
     width: 128px;
+    display: none;
+
+    transition: ease-in;
+    transition-duration: 1s;
 }
 
 .buttons {

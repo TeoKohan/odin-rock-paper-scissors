@@ -10,21 +10,12 @@ let results = {
     LOSE: "lose"
 };
 
-let computerPlay = function() {
+function computerPlay () {
     let choice = Math.floor(Math.random() * Object.keys(hands).length);
     return hands[Object.keys(hands)[choice]];
 };
 
-let playerPlay = function() {
-    let player = prompt("Type 'rock', 'paper' or 'scissors' to select your play: ").toLowerCase();
-    if (new Set(["rock", "paper", "scissors"]).has(player))
-        return player;
-    else
-        return null;
-}
-
-let playRound = function(player, computer) {
-    player = player.toLowerCase();
+function combat (player, computer) {
 
     if (player === computer)
         return results.TIE;
@@ -47,39 +38,119 @@ let playRound = function(player, computer) {
     return results.LOSE;
 };
 
-let game = function() {
-    let score = [0, 0];
-    let rounds = 5;
-    while (rounds--) {
-        let player = playerPlay();
+function playRound (player) {
+    
+    let computer = computerPlay();
+    set_combatant(combatants[1], computer);
+    let result = combat(player, computer);
 
-        while (player === null) {
-            console.log("Invalid play, please enter a valid play");
-            player = playerPlay();
-        }
+    console.log(`${player} vs ${computer} : ${result}`);
 
-        let computer = computerPlay();
-        let result = playRound(player, computer);
-        console.log(`You ${result}! ${player} ${result}s againt ${computer}.`);
-        switch(result) {
-            case results.WIN:
-                score[0]++;
-            break;
-            case results.LOSE:
-                score[1]++;
-            break;
-            case results.TIE:
-            break;
-        }
+    switch(result) {
+        case results.WIN:
+            score[0]++;
+        break;
+        case results.LOSE:
+            score[1]++;
+        break;
+        case results.TIE:
+        break;
     }
 
-    let result = score[0] > score[1] ? results.WIN :
-                 score[0] < score[1] ? results.LOSE :
-                 results.TIE;
+    update_score();
 
-    console.log(`Final score is: ${score[0]} to ${score[1]}, you ${result}!`);
-    let input = prompt(`Play again? y/n`);
-    if (input === 'y')
-        game();
+    if (score[0] < rounds && score[1] < rounds) {
+        prompt.textContent = `${result}!`;
+        delay(500).then(
+            () => {
+                enable_buttons();
+                prompt.textContent = '';
+                clear_combatants();
+            }
+        );
+        return;
+    }
+
+    if (score[0] > score[1])
+        prompt.textContent = `Congratulations you win!`;
+    else 
+        prompt.textContent = `Game Over`;
     return result;
 }
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
+function shuffle(times = 10) {
+    set_combatant(combatants[1], hands.ROCK);
+    for (let i = 1; i <= times; ++i)
+        delay(100 * i).then(() => set_combatant(combatants[1], hands[Object.keys(hands)[i%Object.keys(hands).length]]));
+    return delay(100*(times));
+}
+
+const rounds = 5;
+let score = [0, 0];
+
+let prompt     = document.querySelector('.prompt');
+let scoreboard = [document.querySelector('#player .score'), document.querySelector('#cpu .score')];
+let combatants    = [document.querySelector('#player-choice'), document.querySelector('#cpu-choice')];
+
+let rock_btn     = document.querySelector('#rock');
+let paper_btn    = document.querySelector('#paper');
+let scissors_btn = document.querySelector('#scissors');
+
+function disable_buttons() {
+    rock_btn.disabled = true; 
+    paper_btn.disabled = true; 
+    scissors_btn.disabled = true; 
+}
+
+function enable_buttons() {
+    rock_btn.disabled = false; 
+    paper_btn.disabled = false; 
+    scissors_btn.disabled = false; 
+}
+
+function set_combatant(combatant, to) {
+    combatant.style['display'] = 'block';
+    switch (to) {
+        case hands.ROCK:
+            combatant.src = './images/rock.png';
+        break;
+        case hands.PAPER:
+            combatant.src = './images/paper.png';
+        break;
+        case hands.SCISSORS:
+            combatant.src = './images/scissors.png';
+        break;
+    }
+}
+
+function clear_combatants() {
+    combatants[0].style['display'] = 'none';
+    combatants[1].style['display'] = 'none';
+}
+
+function update_score() {
+    scoreboard[0].textContent = score[0];
+    scoreboard[1].textContent = score[1];
+}
+
+rock_btn.addEventListener('click', function(e) {
+    set_combatant(combatants[0], hands.ROCK)
+    disable_buttons();
+    shuffle().then(() => playRound(hands.ROCK));
+});
+
+paper_btn.addEventListener('click', function(e) {
+    set_combatant(combatants[0], hands.PAPER)
+    disable_buttons();
+    shuffle().then(() => playRound(hands.PAPER));
+});
+
+scissors_btn.addEventListener('click', function(e) {
+    set_combatant(combatants[0], hands.SCISSORS)
+    disable_buttons();
+    shuffle().then(() => playRound(hands.SCISSORS));
+});
